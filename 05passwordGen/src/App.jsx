@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import './App.css'
 
 function App() {
@@ -26,6 +26,16 @@ function App() {
   useEffect(() => {
     passwordGenerator()
   } , [numAllowed, charAllowed, length, passwordGenerator])
+
+  const passwordRef = useRef(null)
+
+  const copyPasswordToClipboard = useCallback(() => {
+    passwordRef.current?.select()
+    window.navigator.clipboard.writeText(password)
+  }, [password])
+
+
+
   return (
     <>
       <div className="w-full max-w-md mx-auto shadow-2xl rounded-2xl py-8 px-6 my-12 bg-gray-900 text-white space-y-6">
@@ -37,9 +47,12 @@ function App() {
       value={password}
       readOnly
       placeholder="Your password will appear here"
+      ref={passwordRef}
       className="flex-1 bg-gray-800 text-white px-4 py-3 outline-none placeholder-gray-500"
     />
-    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 transition-all duration-200">
+    <button 
+    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-3 transition-all duration-200"
+    onClick={copyPasswordToClipboard}>
       Copy
     </button>
   </div>
@@ -53,7 +66,7 @@ function App() {
     <input
       type="range"
       min={8}
-      max={29}
+      max={100}
       value={length}
       onChange={(e) => setLength(e.target.value)}
       className="w-full h-2 appearance-none bg-gray-700 rounded-lg cursor-pointer accent-orange-500"
